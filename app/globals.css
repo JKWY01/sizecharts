@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* 站点皮肤:时尚紫粉基调(与站群其他四站区分) */
+:root {
+  --background: #fdfcfe;
+  --foreground: #231b2e;
+  --brand: #8b3da8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-ink: var(--foreground);
+  --color-brand: var(--brand);
+  --font-sans: ui-sans-serif, -apple-system, "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

@@ -1,0 +1,34 @@
+name: Healthcheck
+
+# 纯静态站(无数据同步):每日线上体检即可。
+on:
+  schedule:
+    - cron: '40 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Health check live site
+        run: node scripts/healthcheck.mjs
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+      - name: Alert on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          OPEN=$(gh issue list --search "🚨 in:title" --state open --json number --jq length)
+          if [ "${OPEN:-0}" = "0" ]; then
+            gh issue create \
+              --title "🚨 healthcheck failed — $(date -u '+%F %T') UTC" \
+              --body "自动告警:线上体检未通过。运行记录:${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} 修复后请关闭本 issue。" || echo "issue create failed (non-fatal)"
+          else
+            echo "alert issue already open, skip duplicate"
+          fi
