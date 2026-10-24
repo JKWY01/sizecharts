@@ -185,16 +185,16 @@ export function pairToUnits(pair: string): [string, string] | null {
   return [m[1].toUpperCase(), m[2].toUpperCase()]
 }
 
-/** 表内换算:找 to 单元格列上最接近 value 的行,返回该行 from 单元格值。 */
+/** 表内换算:找 from 单元格列上最接近 value 的行,返回该行 to 单元格值。 */
 export function convertInTable(system: SizeSystem, from: string, to: string, value: string): string | null {
   const target = Number(value)
   if (!Number.isFinite(target)) return null
   let best: { row: SizeSystem['rows'][number]; dist: number } | null = null
   for (const row of system.rows) {
-    const cell = Number(row[to])
+    const cell = Number(row[from])
     if (!Number.isFinite(cell)) continue
     const dist = Math.abs(cell - target)
     if (!best || dist < best.dist) best = { row, dist }
   }
-  return best ? String(best.row[from]) : null
+  return best ? String(best.row[to]) : null
 }

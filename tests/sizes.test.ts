@@ -46,8 +46,8 @@ describe('size systems integrity', () => {
 describe('conversion consistency (one table, all directions)', () => {
   it('US men 9 → EU is 42 and EU 42 → US is 9 (round-trip on the same table)', () => {
     const s = systemBySlug('mens-shoe')!
-    expect(convertInTable(s, 'EU', 'US', '9')).toBe('42')
-    expect(convertInTable(s, 'US', 'EU', '42')).toBe('9')
+    expect(convertInTable(s, 'US', 'EU', '9')).toBe('42')
+    expect(convertInTable(s, 'EU', 'US', '42')).toBe('9')
   })
 
   it('every generated direction resolves to real table columns', () => {
