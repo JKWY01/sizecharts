@@ -19,6 +19,18 @@ jobs:
         run: node scripts/healthcheck.mjs
         env:
           SITE_URL: ${{ secrets.SITE_URL }}
+      - name: IndexNow ping (optional)
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        if: ${{ env.SITE_URL != '' }}
+        run: |
+          if [ -z "$INDEXNOW_KEY" ]; then echo "no indexnow key, skip"; exit 0; fi
+          for path in "" "/chart/mens-shoe" "/convert/mens-shoe/us-to-eu"; do
+            curl -s -o /dev/null -w "indexnow $path -> %{http_code}\n" \
+              "https://api.indexnow.org/indexnow?url=${SITE_URL}${path}&key=${INDEXNOW_KEY}"
+          done
+
       - name: Alert on failure
         if: failure()
         env:
